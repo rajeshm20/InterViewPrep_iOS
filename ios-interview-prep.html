@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senior Staff iOS Interview Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #ff6b35;
+    --accent2: #00d4ff;
+    --accent3: #a855f7;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --green: #22c55e;
+    --card: #14141f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,107,53,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,107,53,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(255,107,53,0.12);
+    border: 1px solid rgba(255,107,53,0.3);
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    padding: 4px 12px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 32px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent2);
+  }
+
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* Category tabs */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    padding: 24px 0 20px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .tab:hover { border-color: var(--accent); color: var(--accent); }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Q&A Cards */
+  .qa-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 80px; }
+
+  .qa-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+
+  .qa-card:hover { border-color: rgba(255,107,53,0.4); }
+  .qa-card.revealed { border-color: rgba(0, 212, 255, 0.3); }
+
+  .qa-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+  }
+
+  .q-num {
+    font-size: 11px;
+    color: var(--accent);
+    min-width: 32px;
+    padding-top: 2px;
+    letter-spacing: 0.1em;
+  }
+
+  .q-meta { flex: 1; }
+
+  .difficulty {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    border: 1px solid;
+  }
+
+  .difficulty.hard { color: #ff4444; border-color: rgba(255,68,68,0.3); background: rgba(255,68,68,0.08); }
+  .difficulty.medium { color: #f59e0b; border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
+  .difficulty.expert { color: var(--accent3); border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.08); }
+
+  .question {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .reveal-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  .reveal-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .reveal-btn.shown { border-color: var(--accent2); color: var(--accent2); }
+
+  .answer-block {
+    display: none;
+    padding: 0 24px 20px 72px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+
+  .answer-block.visible { display: block; }
+
+  .answer-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    padding-top: 16px;
+    margin-bottom: 10px;
+  }
+
+  .answer-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #c8c8d8;
+  }
+
+  .answer-text strong { color: var(--accent); }
+
+  .code-block {
+    background: #0d0d15;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #a8b5d0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .tip-block {
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--green);
+  }
+
+  .tip-block::before { content: '💡 PRO TIP: '; font-weight: 600; }
+
+  /* Floating controls */
+  .controls {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .ctrl-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .ctrl-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+  .ctrl-btn.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+  .ctrl-btn.primary:hover { background: #ff8855; }
+
+  .section-divider {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 24px 0 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  @media (max-width: 640px) {
+    .answer-block { padding-left: 24px; }
+    .controls { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="tag">Interview Prep Kit</div>
+    <h1>Senior Staff<br><span>iOS Developer</span></h1>
+    <p class="subtitle">// 40 curated questions across 6 domains · with model answers</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-num">40</span><span class="stat-label">Questions</span></div>
+      <div class="stat"><span class="stat-num">6</span><span class="stat-label">Domains</span></div>
+      <div class="stat"><span class="stat-num" id="revealCount">0</span><span class="stat-label">Reviewed</span></div>
+    </div>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-cat="all">All</button>
+    <button class="tab" data-cat="swift">Swift & Language</button>
+    <button class="tab" data-cat="architecture">Architecture</button>
+    <button class="tab" data-cat="concurrency">Concurrency</button>
+    <button class="tab" data-cat="performance">Performance</button>
+    <button class="tab" data-cat="leadership">Leadership</button>
+    <button class="tab" data-cat="system">System Design</button>
+  </div>
+
+  <div class="progress-label" id="progressLabel">Progress: 0 / 40 reviewed</div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="qa-list" id="qaList"></div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn" onclick="collapseAll()">Collapse All</button>
+  <button class="ctrl-btn primary" onclick="revealAll()">Reveal All</button>
+</div>
+
+<script>
+const questions = [
+  // ── SWIFT & LANGUAGE ─────────────────────────────────────────────────────────
+  {
+    cat: 'swift', difficulty: 'hard',
+    q: 'Explain Swift\'s ownership model and the role of ARC. How do you prevent retain cycles?',
+    a: `<strong>ARC (Automatic Reference Counting)</strong> automatically tracks and manages memory by counting strong references to class instances. When the count drops to zero, the object is deallocated.
+
+<strong>Retain cycles</strong> occur when two objects hold strong references to each other, preventing deallocation. You break them with:`,
+    code: `// Weak reference (optional, may become nil)
+class ViewController: UIViewController {
+    weak var delegate: MyDelegate?
+}
+
+// Unowned reference (non-optional, must outlive owner)
+class Request {
+    let session: URLSession
+    unowned let manager: RequestManager
+    init(session: URLSession, manager: RequestManager) {
+        self.session = session
+        self.manager = manager
+    }
+}
+
+// Capture lists in closures
+class ViewModel {
+    var onUpdate: (() -> Void)?
+    func setup() {
+        onUpdate = { [weak self] in
+            guard let self else { return }
+            self.refresh()
+        }
+    }
+}`,
+    tip: 'At Staff level, mention Instruments → Leaks/Allocations to detect cycles, and Xcode\'s memory graph debugger.'
+  },
+  {
+    cat: 'swift', difficulty: 'expert',
+    q: 'How does Swift\'s type system handle protocol existentials vs generics? When do you choose each?',
+    a: `<strong>Generics</strong> use static dispatch — the concrete type is resolved at compile-time, enabling optimizations like inlining and specialization. <strong>Protocol existentials</strong> (any Protocol) use dynamic dispatch via a witness table, adding indirection but allowing heterogeneous collections.
+
+Swift 5.7 introduced <strong>any</strong> keyword to make existentials explicit, and <strong>some</strong> for opaque return types.`,
+    code: `// Generic — prefer when callee can be specialized
+func process<T: Drawable>(_ item: T) { item.draw() }
+
+// Existential — use for heterogeneous storage
+let shapes: [any Drawable] = [Circle(), Square()]
+
+// Opaque return (some) — hides concrete type, keeps static dispatch
+func makeView() -> some View { Text("Hello") }
+
+// Primary associated types (Swift 5.7) — constrained existentials
+func display(_ collection: any Collection<String>) { ... }`,
+    tip: 'Existentials box value types onto the heap (inline buffer for ≤3 words). This is a common performance footgun — mention it.'
+  },
+  {
+    cat: 'swift', difficulty: 'medium',
+    q: 'What are property wrappers and how would you design a custom one for thread-safe access?',
+    a: `Property wrappers encapsulate common storage patterns behind an attribute. They declare a <strong>wrappedValue</strong> and optionally a <strong>projectedValue</strong> (accessed via $).`,
+    code: `@propertyWrapper
+final class Atomic<T> {
+    private var _value: T
+    private let lock = NSLock()
+
+    init(wrappedValue: T) { _value = wrappedValue }
+
+    var wrappedValue: T {
+        get { lock.withLock { _value } }
+        set { lock.withLock { _value = newValue } }
+    }
+}
+
+// Usage
+class Counter {
+    @Atomic var count = 0
+}`,
+    tip: 'Discuss when to prefer actors (Swift concurrency) over NSLock for new code. Show you know both paradigms.'
+  },
+  {
+    cat: 'swift', difficulty: 'hard',
+    q: 'Explain Swift macros (SE-0382). What problem do they solve and what are their limitations?',
+    a: `Swift macros (introduced Swift 5.9) are compile-time code transformations. Unlike C macros, they are <strong>type-checked, hygienic, and testable</strong>. They come in two flavors:
+
+• <strong>Freestanding</strong> (#stringify, #warning) — produce expressions or declarations
+• <strong>Attached</strong> (@Observable, @Model) — augment existing declarations
+
+They solve boilerplate (e.g., Codable conformance, Observable pattern) without runtime overhead.`,
+    code: `// Attached macro example
+@Observable class UserViewModel {
+    var name = ""   // macro generates _$observationRegistrar + willSet/didSet hooks
+    var age = 0
+}
+
+// The macro expands at compile time — inspect via:
+// Product → Perform Action → Expand Macro`,
+    tip: 'Mention that macros run in a sandboxed process (SwiftSyntax). Mention @Observable replaces ObservableObject+@Published for SwiftUI.'
+  },
+  {
+    cat: 'swift', difficulty: 'hard',
+    q: 'How do result builders work, and when is building your own DSL justified?',
+    a: `<strong>Result builders</strong> (formerly function builders) transform a series of statements into a single value through a set of static build methods. SwiftUI\'s ViewBuilder is the canonical example.`,
+    code: `@resultBuilder
+struct HTMLBuilder {
+    static func buildBlock(_ components: String...) -> String {
+        components.joined(separator: "\n")
+    }
+    static func buildOptional(_ component: String?) -> String {
+        component ?? ""
+    }
+    static func buildEither(first: String) -> String { first }
+    static func buildEither(second: String) -> String { second }
+}
+
+func html(@HTMLBuilder _ content: () -> String) -> String {
+    "<html>\(content())</html>"
+}`,
+    tip: 'At Staff level, the key insight is recognizing when DSLs improve readability vs. add cognitive overhead. Cite real examples: test DSLs, router builders.'
+  },
+  {
+    cat: 'swift', difficulty: 'medium',
+    q: 'Describe value semantics, copy-on-write (CoW), and when to prefer structs over classes.',
+    a: `<strong>Value types</strong> (struct, enum, tuple) are copied on assignment — each instance is independent. <strong>Reference types</strong> (class, actor) share identity.
+
+<strong>CoW</strong> defers the actual copy until mutation, avoiding expensive copies when values are only read. Swift's standard library types (Array, Dictionary, String) implement CoW via isKnownUniquelyReferenced.`,
+    code: `// Custom CoW
+struct SafeBuffer {
+    private var storage: NSMutableData
+
+    init() { storage = NSMutableData() }
+
+    private mutating func ensureUnique() {
+        if !isKnownUniquelyReferenced(&storage) {
+            storage = storage.mutableCopy() as! NSMutableData
+        }
+    }
+
+    mutating func append(_ byte: UInt8) {
+        ensureUnique()
+        storage.append([byte], length: 1)
+    }
+}`,
+    tip: 'Prefer structs by default. Use classes for identity semantics, inheritance chains, or Objective-C interop.'
+  },
+  // ── ARCHITECTURE ─────────────────────────────────────────────────────────────
+  {
+    cat: 'architecture', difficulty: 'expert',
+    q: 'Compare MVC, MVVM, TCA, and Clean Architecture for a large-scale iOS app. What do you choose and why?',
+    a: `<strong>MVC</strong>: Apple's default. Simple but leads to Massive View Controllers in large codebases. The VC does too much.
+
+<strong>MVVM</strong>: ViewModel handles presentation logic, testable without UI. Works well with Combine/SwiftUI. Weakness: no prescribed navigation layer.
+
+<strong>TCA (The Composable Architecture)</strong>: Unidirectional data flow, composable reducers, built-in effects system. Excellent for state machines and testability. Learning curve is steep.
+
+<strong>Clean Architecture</strong>: Enforces dependency inversion with distinct layers (Domain, Data, Presentation). Best for large teams where layer boundaries prevent coupling.
+
+At Staff level, the right answer is pragmatic: match architecture to team size and app complexity. A startup should start MVVM; a 50-engineer codebase needs Clean Architecture boundaries with module-per-feature.`,
+    tip: 'Emphasize dependency injection, protocol-based abstractions, and how you\'d enforce boundaries with Swift Package Manager modules.'
+  },
+  {
+    cat: 'architecture', difficulty: 'hard',
+    q: 'How do you architect navigation in a large SwiftUI app? Compare approaches.',
+    a: `SwiftUI navigation has evolved significantly. Three main strategies:
+
+<strong>1. NavigationStack + navigationDestination</strong> (iOS 16+): Type-safe, stack-based. Good for simple hierarchies.
+
+<strong>2. Coordinator pattern</strong>: Separates navigation logic from views. Each feature module owns its Coordinator which owns its NavigationPath.
+
+<strong>3. Router/DeepLink manager</strong>: Centralized state machine mapping app state → routes, enabling deep-linking and testability.`,
+    code: `// Coordinator approach
+@Observable class AppCoordinator {
+    var path = NavigationPath()
+    
+    func push(_ route: AppRoute) {
+        path.append(route)
+    }
+    func pop() { path.removeLast() }
+}
+
+enum AppRoute: Hashable {
+    case detail(itemID: UUID)
+    case settings
+    case profile(userID: String)
+}`,
+    tip: 'Mention that deep-linking requires your navigation state to be fully serializable. This is a common oversight teams discover late.'
+  },
+  {
+    cat: 'architecture', difficulty: 'hard',
+    q: 'How do you structure an iOS codebase for a 20+ engineer team using SPM?',
+    a: `A modular monorepo with Swift Package Manager. Organize packages by layer and feature:
+
+<strong>Layer packages</strong>: CoreNetwork, CorePersistence, CoreUI, DesignSystem
+<strong>Feature packages</strong>: FeatureHome, FeatureCheckout, FeatureAuth — each owns its own models, viewmodels, views, tests
+<strong>App target</strong>: Only wires features together via DI
+
+Benefits: parallel compilation, faster incremental builds, clear ownership, enforced boundaries (no cross-feature imports), reusable in extensions/widgets.`,
+    tip: 'Mention XCRemoteSwiftPackageReference vs local packages, and how you\'d use .product(name:package:) to expose only public APIs. Also mention build time impact of dynamic vs static linking.'
+  },
+  {
+    cat: 'architecture', difficulty: 'medium',
+    q: 'Explain dependency injection in Swift. How do you implement a DI container without third-party libraries?',
+    a: `DI decouples object creation from use, enabling testability and flexibility. In Swift, protocol-based DI is preferred.
+
+A lightweight service locator / DI container:`,
+    code: `// Protocol-based dependencies
+protocol Analytics { func track(_ event: String) }
+protocol NetworkClient { func get(_ url: URL) async throws -> Data }
+
+// DI Container
+final class ServiceLocator {
+    static let shared = ServiceLocator()
+    private var factories: [ObjectIdentifier: Any] = [:]
+
+    func register<T>(_ type: T.Type, factory: @escaping () -> T) {
+        factories[ObjectIdentifier(type)] = factory
+    }
+
+    func resolve<T>(_ type: T.Type) -> T {
+        guard let factory = factories[ObjectIdentifier(type)] as? () -> T else {
+            fatalError("No registration for \(type)")
+        }
+        return factory()
+    }
+}
+
+// In tests: register mocks
+// ServiceLocator.shared.register(Analytics.self) { MockAnalytics() }`,
+    tip: 'At Staff level, discuss the tradeoffs: service locator hides dependencies (anti-pattern) vs explicit constructor injection. Prefer constructor injection; use containers only at the composition root.'
+  },
+  {
+    cat: 'architecture', difficulty: 'hard',
+    q: 'How do you design an offline-first iOS app with sync?',
+    a: `Key principles: <strong>local is source of truth</strong>, changes are queued and synced opportunistically.
+
+Architecture layers:
+1. <strong>Local store</strong> (Core Data / SwiftData / SQLite) — all reads/writes go here first
+2. <strong>Sync engine</strong> — observes local changes, diffs against server state, resolves conflicts
+3. <strong>Conflict resolution</strong> — LWW (last-write-wins), CRDT, or custom merge strategies
+4. <strong>Sync queue</strong> — persisted operation queue surviving app restarts
+5. <strong>Network layer</strong> — monitors reachability, batches requests`,
+    tip: 'Mention CloudKit / iCloud if applicable. Discuss tombstoning deleted records and idempotent server mutations (PUT vs POST). Conflict resolution is where candidates usually have gaps — go deep here.'
+  },
+  {
+    cat: 'architecture', difficulty: 'expert',
+    q: 'What patterns do you use to make SwiftUI views highly testable and previewable?',
+    a: `Views should be <strong>pure functions of state</strong>. Extract all logic to ViewModels or domain objects.
+
+Key patterns:
+• <strong>Protocol-based dependencies</strong> injected into ViewModel
+• <strong>Dependency inversion in previews</strong> via mock implementations
+• <strong>ViewInspector</strong> for unit-testable view hierarchies
+• <strong>Snapshot testing</strong> with swift-snapshot-testing`,
+    code: `// Testable ViewModel
+@Observable class FeedViewModel {
+    private let service: any FeedService
+    var items: [FeedItem] = []
+    var state: LoadState = .idle
+
+    init(service: any FeedService) {
+        self.service = service
+    }
+
+    func load() async {
+        state = .loading
+        do {
+            items = try await service.fetchItems()
+            state = .loaded
+        } catch { state = .failed(error) }
+    }
+}
+
+// Preview with mock
+#Preview {
+    FeedView(viewModel: FeedViewModel(service: MockFeedService()))
+}`,
+    tip: 'Mention that @Observable (Swift 5.9) makes ViewModels easier to test than @ObservableObject because no Combine subscriptions to manage.'
+  },
+  // ── CONCURRENCY ──────────────────────────────────────────────────────────────
+  {
+    cat: 'concurrency', difficulty: 'expert',
+    q: 'Explain Swift\'s actor model. How do actors prevent data races and what are their limitations?',
+    a: `<strong>Actors</strong> are reference types with serial execution guarantees — only one task executes on the actor at a time. All stored properties are protected; external access requires <strong>await</strong> (async context).
+
+<strong>@MainActor</strong> is a global actor bound to the main thread — annotate UI-related code.
+
+Limitations:
+• Actor reentrancy — suspension points (await) can allow other tasks to run, potentially mutating state
+• No inheritance — actors cannot subclass
+• Cross-actor calls are async even if the actor is idle`,
+    code: `actor BankAccount {
+    private var balance: Double = 0
+
+    func deposit(_ amount: Double) {
+        balance += amount
+    }
+
+    // Reentrancy risk — check after every await
+    func transfer(amount: Double, to other: BankAccount) async throws {
+        guard balance >= amount else { throw BankError.insufficient }
+        balance -= amount
+        await other.deposit(amount)
+        // State may have changed since the check above!
+    }
+}`,
+    tip: 'Discuss nonisolated methods (no actor protection needed, synchronous), and isolated parameters. Reentrancy is a frequent interview deep-dive.'
+  },
+  {
+    cat: 'concurrency', difficulty: 'hard',
+    q: 'What is structured concurrency and how do TaskGroup, async let, and Task differ?',
+    a: `<strong>Structured concurrency</strong> means child tasks are scoped to their parent — cancellation propagates down, and the parent doesn't complete until all children do.
+
+• <strong>async let</strong>: Spawn parallel child tasks inline; implicitly awaited at scope exit
+• <strong>TaskGroup</strong>: Dynamic number of child tasks; collects results
+• <strong>Task { }</strong>: Unstructured — escapes the current scope, manual lifecycle`,
+    code: `// async let — parallel fetches
+func loadDashboard() async throws -> Dashboard {
+    async let user = fetchUser()
+    async let feed = fetchFeed()
+    async let notifications = fetchNotifications()
+    return try await Dashboard(user: user, feed: feed, notifications: notifications)
+}
+
+// TaskGroup — dynamic
+func fetchAll(ids: [UUID]) async throws -> [Item] {
+    try await withThrowingTaskGroup(of: Item.self) { group in
+        for id in ids { group.addTask { try await fetch(id) } }
+        return try await group.reduce(into: []) { $0.append($1) }
+    }
+}`,
+    tip: 'Explain that async let creates a child task immediately on declaration, even before the await. This is a common misconception.'
+  },
+  {
+    cat: 'concurrency', difficulty: 'hard',
+    q: 'How do you integrate Combine with async/await in legacy codebases?',
+    a: `Use <strong>values</strong> property on Publishers (AsyncPublisher) or bridge with <strong>AsyncStream</strong>. Use <strong>withCheckedContinuation</strong> for one-shot Combine Publishers.`,
+    code: `// Publisher → AsyncStream bridge
+extension Publisher where Failure == Never {
+    var asyncStream: AsyncStream<Output> {
+        AsyncStream { continuation in
+            let cancel = sink { _ in continuation.finish() }
+                           receiveValue: { continuation.yield($0) }
+            continuation.onTermination = { _ in cancel.cancel() }
+        }
+    }
+}
+
+// One-shot Publisher → async
+func fetchOnce<P: Publisher>(_ publisher: P) async throws -> P.Output {
+    try await withCheckedThrowingContinuation { continuation in
+        var cancellable: AnyCancellable?
+        cancellable = publisher.first().sink(
+            receiveCompletion: { 
+                if case .failure(let e) = $0 { continuation.resume(throwing: e) }
+                cancellable = nil
+            },
+            receiveValue: { continuation.resume(returning: $0) }
+        )
+    }
+}`,
+    tip: 'Mention that AsyncPublisher (publisher.values) is built-in for Combine. Custom bridges are needed for hot publishers or complex lifecycles.'
+  },
+  {
+    cat: 'concurrency', difficulty: 'medium',
+    q: 'What is MainActor and how do you manage UI updates in async code?',
+    a: `<strong>@MainActor</strong> ensures code runs on the main thread. Annotate your ViewModel, individual methods, or call <strong>await MainActor.run { }</strong> from a background task.`,
+    code: `@MainActor
+class ProfileViewModel: ObservableObject {
+    @Published var user: User?
+
+    // All methods implicitly run on main thread
+    func load() async {
+        // Hop off main for network call
+        let data = try? await Task.detached { 
+            try await self.api.fetchUser() 
+        }.value
+        // Back on main (because class is @MainActor)
+        user = data
+    }
+}
+
+// Or use nonisolated + explicit hop
+nonisolated func expensiveCompute() async -> Result {
+    let r = await heavyWork()          // runs on cooperative pool
+    await MainActor.run { update(r) }  // hop to main
+}`,
+    tip: 'Annotating the ViewModel class @MainActor is usually best for SwiftUI — it ensures Combine/Observable callbacks publish on main.'
+  },
+  {
+    cat: 'concurrency', difficulty: 'hard',
+    q: 'How do you handle task cancellation gracefully?',
+    a: `Swift cancellation is <strong>cooperative</strong> — tasks must check for cancellation and respond. Use <strong>Task.checkCancellation()</strong> to throw, or <strong>Task.isCancelled</strong> to handle gracefully.
+
+Cancellation propagates to child tasks automatically in structured concurrency.`,
+    code: `func processImages(_ urls: [URL]) async throws -> [UIImage] {
+    var result: [UIImage] = []
+    for url in urls {
+        try Task.checkCancellation() // throws CancellationError if cancelled
+        let image = try await downloadImage(url)
+        result.append(image)
+    }
+    return result
+}
+
+// In UI layer
+class ViewModel {
+    private var loadTask: Task<Void, Never>?
+
+    func load() {
+        loadTask?.cancel() // Cancel previous
+        loadTask = Task { [weak self] in
+            do { try await self?.processImages(urls) }
+            catch is CancellationError { /* expected, ignore */ }
+            catch { /* handle real errors */ }
+        }
+    }
+
+    func cancel() { loadTask?.cancel() }
+}`,
+    tip: 'Emphasize that URLSession respects Task cancellation automatically in async/await. Legacy callbacks require explicit cancellation tokens.'
+  },
+  {
+    cat: 'concurrency', difficulty: 'expert',
+    q: 'How does Swift\'s cooperative thread pool work vs GCD? When would you still use GCD?',
+    a: `Swift concurrency uses a <strong>fixed-width cooperative thread pool</strong> (≈ CPU cores). Tasks yield at suspension points (await), allowing other tasks to run without blocking threads. This avoids thread explosion.
+
+<strong>GCD</strong> uses dynamic thread creation — too many blocking calls can create hundreds of threads (thread explosion), causing context-switch overhead.
+
+<strong>Use GCD still for</strong>: Integrating C libraries with blocking calls, file I/O with DispatchIO, DispatchSource for system events, custom serial queues for legacy Objective-C.`,
+    tip: 'Mention Thread.sleep vs Task.sleep — Thread.sleep on the cooperative pool blocks the thread (a bug!). Always use Task.sleep in async contexts.'
+  },
+  // ── PERFORMANCE ──────────────────────────────────────────────────────────────
+  {
+    cat: 'performance', difficulty: 'hard',
+    q: 'How do you diagnose and fix a janky scroll view (dropped frames) in a complex feed?',
+    a: `Workflow: <strong>Measure first</strong> — never optimize blindly.
+
+1. <strong>Instruments → Core Animation</strong>: Identify dropped frames, off-screen renders (yellow), blended layers (red)
+2. <strong>hitching</strong>: Look at Hitch Rate, not just FPS
+3. Common culprits:
+   • Cell re-use issues — configure cell after dequeue, not before
+   • Blending — opaque backgrounds eliminate alpha compositing
+   • Shadow paths — use shadowPath instead of letting Core Animation compute it
+   • Image decoding on main thread — decode async before rendering
+   • Auto Layout churn — flatten hierarchies, use fixed sizes
+4. <strong>Prefetching</strong>: UICollectionViewDataSourcePrefetching for background image loading`,
+    code: `// Background image decode
+func decodeImage(_ data: Data) -> UIImage? {
+    let imageSource = CGImageSourceCreateWithData(data as CFData, nil)!
+    let options = [kCGImageSourceShouldCacheImmediately: true] as CFDictionary
+    guard let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, options) else { return nil }
+    return UIImage(cgImage: cgImage)
+}`,
+    tip: 'MetricKit can collect real-user hitch data in production. Mention it to show you care about field performance, not just lab benchmarks.'
+  },
+  {
+    cat: 'performance', difficulty: 'hard',
+    q: 'Explain memory layout in Swift — stack vs heap, inline storage, existential containers.',
+    a: `<strong>Stack</strong>: Fixed-size allocations, fast, LIFO. Struct values with size known at compile-time live here.
+<strong>Heap</strong>: Dynamic allocation for class instances, closures (captures), and large value types.
+
+<strong>Existential containers</strong>: 3-word inline buffer + type metadata pointer + witness table pointer. Values ≤3 words fit inline (no heap allocation); larger values heap-allocate through an indirection box.
+
+This is why generics outperform existentials for hot paths — no boxing.`,
+    tip: 'You can inspect memory layout with MemoryLayout<T>.size/stride/alignment. Demonstrate this knowledge for types like Optional<Int> (same size as Int due to null bit).'
+  },
+  {
+    cat: 'performance', difficulty: 'expert',
+    q: 'How do you profile and reduce app launch time?',
+    a: `<strong>Phases of launch</strong>:
+• <strong>Pre-main</strong>: dylib loading, ObjC class registration, static initializers
+• <strong>Post-main</strong>: AppDelegate, root view creation, first frame
+
+<strong>Tools</strong>: Instruments → App Launch template; DYLD_PRINT_STATISTICS environment variable.
+
+<strong>Optimizations</strong>:
+• Reduce dynamic framework count (merge, use static)
+• Defer work: lazy initialization, async task for non-critical setup
+• Remove +load and +initialize methods (prefer +initialize with dispatch_once or lazy vars)
+• Binary size — fewer unused symbols = faster dyld
+• Merge Objective-C categories into primary implementation files`,
+    tip: 'Apple targets <400ms warm launch, <1s cold launch for WWDC guidelines. MetricKit MXAppLaunchMetric tracks real-user launch times.'
+  },
+  {
+    cat: 'performance', difficulty: 'hard',
+    q: 'How do you optimize energy and battery usage in an iOS app?',
+    a: `Key principles: <strong>batch work</strong>, <strong>defer non-urgent tasks</strong>, <strong>minimize wake-ups</strong>.
+
+• Use <strong>BGTaskScheduler</strong> for background processing — system batches tasks to minimize radio wake-ups
+• <strong>URLSession background session</strong> for large transfers — system handles them between app launches
+• <strong>NSURLRequestUseProtocolCachePolicy</strong> — reduce redundant network calls
+• Avoid tight polling loops — use push, not pull
+• Location: use significant-change monitoring vs continuous GPS; set desiredAccuracy appropriately
+• Instruments → Energy Log to quantify`,
+    tip: 'Xcode Organizer shows Energy Impact from real devices in the field via MetricKit. This is a sign of maturity — mention it.'
+  },
+  {
+    cat: 'performance', difficulty: 'medium',
+    q: 'What are the differences between UITableView, UICollectionView, and SwiftUI List for large data sets? When do you use each?',
+    a: `<strong>UITableView</strong>: Mature, simple vertical list. Cell reuse pool is highly optimized. Best for homogeneous 1D lists.
+
+<strong>UICollectionView</strong>: Compositional layouts (iOS 13+) allow complex grid, waterfall, and orthogonal scroll sections. Use for any non-trivial layout.
+
+<strong>SwiftUI List</strong>: Simple API, ~lazy loading on iOS 16+. Acceptable for most cases; falls back to UITableView internally. Customization is limited. Avoid for extremely complex cells or 10k+ items.
+
+<strong>Rule of thumb</strong>: Use SwiftUI List for new code ≤10k items with simple cells; fall back to UICollectionView wrapped in UIViewRepresentable for complex layouts or performance-sensitive feeds.`,
+    tip: 'Diffable Data Source (NSDiffableDataSourceSnapshot) should be standard for any table/collection — mention it as the modern approach to updates.'
+  },
+  // ── LEADERSHIP ───────────────────────────────────────────────────────────────
+  {
+    cat: 'leadership', difficulty: 'medium',
+    q: 'How do you handle technical debt in a shipping product without stopping feature work?',
+    a: `The "Boy Scout Rule" applied at scale: <strong>leave code better than you found it</strong> with every PR. But for systemic debt, you need a strategy:
+
+1. <strong>Quantify</strong>: Build time, test coverage, incident frequency tied to debt areas
+2. <strong>Classify</strong>: Blocking debt (slows features) vs risk debt (potential incidents) vs maintenance debt
+3. <strong>Negotiate</strong>: Make debt visible to PM with cost framing — "this adds 2 days to every feature in Module X"
+4. <strong>Strangle pattern</strong>: Wrap legacy code with a new interface, route new writes to new system, migrate reads incrementally
+5. <strong>Budget</strong>: Reserve 15-20% of each sprint for debt; avoid "debt sprints" (they never happen consistently)`,
+    tip: 'At Staff level, you\'re expected to influence roadmap. Show you can frame technical work in business terms — risk, velocity, reliability.'
+  },
+  {
+    cat: 'leadership', difficulty: 'hard',
+    q: 'Describe your approach to code review as a senior/staff engineer.',
+    a: `Code review has multiple goals: <strong>correctness</strong>, <strong>knowledge sharing</strong>, <strong>consistency</strong>, and <strong>mentoring</strong>.
+
+My approach:
+• <strong>Prioritize</strong>: Architecture and correctness first; style second (automate style with SwiftLint/SwiftFormat)
+• <strong>Be kind and specific</strong>: "This closure captures self strongly — [weak self] prevents the retain cycle on line 42" > "memory leak"
+• <strong>Suggest, don\'t dictate</strong>: Prefix non-blocking feedback with "nit:" or "optional:"
+• <strong>Look for</strong>: Missing error handling, threading assumptions, missing test coverage, API surface changes
+• <strong>Unblock quickly</strong>: Reviews within hours; block calendars for morning review time
+• <strong>Approve with comments</strong>: Don\'t hold PRs hostage for nits`,
+    tip: 'Discuss how you\'d set up automated checks (lint, format, tests in CI) so reviews focus on architecture and logic, not mechanical issues.'
+  },
+  {
+    cat: 'leadership', difficulty: 'hard',
+    q: 'How do you mentor junior/mid-level engineers while remaining productive yourself?',
+    a: `The multiplier mindset: <strong>investing in others compounds</strong>.
+
+Tactics that scale:
+• <strong>Structured pairing</strong>: 30-min pairing sessions, not open-ended; focus on a specific problem
+• <strong>Architecture Decision Records</strong>: Document why, not just what — juniors learn from context
+• <strong>PR feedback as teaching</strong>: Link to resources, explain the "why" behind every suggestion
+• <strong>Delegate growth tasks</strong>: Assign slightly-above-level work with support, not just busy work
+• <strong>Office hours</strong>: Fixed 30-min block where I\'m available — prevents constant interruptions
+• <strong>Blameless retrospectives</strong>: Create psychological safety for making mistakes`,
+    tip: 'Mention the "1-3-10" principle: if you answer a question 3 times, write a doc; 10 times, create a self-service tool. This multiplies your time.'
+  },
+  {
+    cat: 'leadership', difficulty: 'expert',
+    q: 'How do you drive an architectural migration across multiple teams?',
+    a: `Large migrations fail when they\'re top-down mandates or indefinite "phase 2" projects.
+
+My framework:
+1. <strong>Build conviction</strong>: Prototype + benchmarks to demonstrate value, not theory
+2. <strong>Find allies</strong>: Identify early adopters willing to take risk for benefits
+3. <strong>Make it easy to adopt</strong>: Migration guides, codemods, pairing support
+4. <strong>Compatibility shim</strong>: New system works alongside old during transition period
+5. <strong>Track and publicize progress</strong>: Dashboard showing % migrated per team
+6. <strong>Deprecate deliberately</strong>: Set a sunset date with warning, then remove old path
+7. <strong>Never leave teams stranded</strong>: Block launches if needed to ensure teams don\'t fall behind`,
+    tip: 'Real example format: "When we migrated from RxSwift to async/await, I wrote a compatibility bridge that let teams adopt at their pace, reducing the big-bang risk." Tell a story.'
+  },
+  {
+    cat: 'leadership', difficulty: 'medium',
+    q: 'How do you define done for a feature? What\'s in your definition of done?',
+    a: `"Done" means <strong>shipped and monitored</strong>, not just merged.
+
+My DoD includes:
+• Unit + integration tests written (≥80% coverage on new code)
+• Code reviewed and approved
+• Feature flag wired (for staged rollout)
+• Analytics events verified in QA
+• Accessibility audit (VoiceOver, Dynamic Type, color contrast)
+• Localization strings extracted
+• Error states and empty states designed and implemented
+• Monitoring/alerting configured (crash rate, metric thresholds)
+• Rollback plan documented
+• Documentation updated (API docs, README, ADR if architectural)`,
+    tip: 'The accessibility and rollback plan items often surprise interviewers — they signal production maturity beyond pure engineering.'
+  },
+  {
+    cat: 'leadership', difficulty: 'hard',
+    q: 'How do you handle disagreements with engineering managers or PMs on technical decisions?',
+    a: `Technical disagreements are healthy when handled professionally.
+
+My approach:
+1. <strong>Understand their perspective first</strong>: What constraint or context am I missing?
+2. <strong>Frame in their terms</strong>: Risk and timeline, not technical purity
+3. <strong>Propose options with tradeoffs</strong>: Not "do it my way" but "here are 3 paths"
+4. <strong>Data > opinions</strong>: Prototype, benchmark, or reference industry examples
+5. <strong>Disagree and commit</strong>: Once a decision is made with full information, fully support it
+6. <strong>Document the decision</strong>: ADR preserves context so "I told you so" moments are learning opportunities, not blame`,
+    tip: 'At Staff level, managing up is explicit. Show you can influence without authority and protect team velocity while respecting organizational constraints.'
+  },
+  // ── SYSTEM DESIGN ────────────────────────────────────────────────────────────
+  {
+    cat: 'system', difficulty: 'expert',
+    q: 'Design a client-side caching layer for a social media app with a news feed.',
+    a: `Requirements: <strong>fast reads</strong>, <strong>offline support</strong>, <strong>freshness</strong>, <strong>bounded storage</strong>.
+
+Architecture:
+• <strong>L1 — In-memory cache</strong>: NSCache (auto-evicts under pressure), TTL-based expiry, keyed by feedPage cursor
+• <strong>L2 — Disk cache</strong>: Core Data / SQLite, stores normalized entities (User, Post separate from feed order)
+• <strong>Invalidation</strong>: Server sends ETag / Last-Modified headers; conditional GET (If-None-Match)
+• <strong>Eviction</strong>: LRU eviction, max 500 posts, delete posts older than 48h
+• <strong>Prefetch</strong>: Fetch page N+1 when user is 80% through page N
+• <strong>Optimistic updates</strong>: Apply likes/comments locally before server confirmation; rollback on error`,
+    tip: 'Discuss normalization — storing User entities separately so a username change updates once, not in every post. This shows systems-level thinking.'
+  },
+  {
+    cat: 'system', difficulty: 'expert',
+    q: 'Design a real-time chat feature for an iOS app. What are the key technical decisions?',
+    a: `Key decisions:
+
+<strong>Transport</strong>: WebSocket (URLSessionWebSocketTask) for low-latency bidirectional comms. SSE for read-only feeds. HTTP/2 push for sparse messages.
+
+<strong>Message delivery guarantees</strong>:
+• Client assigns UUID to each message
+• Local-first: write to local DB immediately (optimistic)
+• Server confirms with sequence number
+• Missed messages filled by polling on reconnect
+
+<strong>Local persistence</strong>: Core Data / SwiftData with conversation threading
+<strong>Presence</strong>: Heartbeat every 30s; show "last seen" from server
+<strong>Push notifications</strong>: APNs for background delivery
+<strong>End-to-end encryption</strong>: Signal Protocol (if required) — key exchange on first message`,
+    tip: 'Always clarify requirements: 1:1 vs group? E2E encryption? Message history limits? Reactions? This shows product thinking alongside technical depth.'
+  },
+  {
+    cat: 'system', difficulty: 'hard',
+    q: 'How do you implement a robust image loading and caching system without a third-party library?',
+    a: `Three-tier system:`,
+    code: `class ImageLoader {
+    // L1: In-memory (NSCache evicts under pressure)
+    private let memCache = NSCache<NSURL, UIImage>()
+    
+    // L2: Disk cache in Caches directory (OS can evict)
+    private let diskCacheURL = FileManager.default
+        .urls(for: .cachesDirectory, in: .userDomainMask)[0]
+        .appendingPathComponent("ImageCache")
+    
+    // L3: Network
+    private let session: URLSession
+
+    func image(for url: URL) async throws -> UIImage {
+        // L1 hit
+        if let img = memCache.object(forKey: url as NSURL) { return img }
+        // L2 hit
+        if let img = diskRead(url) { memCache.setObject(img, forKey: url as NSURL); return img }
+        // Network
+        let (data, _) = try await session.data(from: url)
+        let img = try decode(data) // background decode
+        memCache.setObject(img, forKey: url as NSURL)
+        diskWrite(data, for: url)
+        return img
+    }
+}`,
+    tip: 'Deduplicate in-flight requests using a task dictionary keyed by URL — multiple callers for the same URL share one network request. This is what SDWebImage / Kingfisher do.'
+  },
+  {
+    cat: 'system', difficulty: 'hard',
+    q: 'How would you implement background sync for a note-taking app?',
+    a: `Requirements: sync when app is killed, battery-efficient, conflict resolution.
+
+Architecture:
+• <strong>BGProcessingTask</strong> (BGTaskScheduler): Long-running sync, registered with identifier in Info.plist, system schedules when device is charging + idle
+• <strong>BGAppRefreshTask</strong>: Short 30s window to check for changes
+• <strong>URLSession background session</strong>: Upload/download survives process death; delegate called on relaunch
+• <strong>Change tracking</strong>: Core Data persistent history tracking (NSPersistentHistoryTransaction) to find uncommitted changes
+• <strong>Conflict resolution</strong>: Operational transform or last-write-wins based on updatedAt timestamp`,
+    tip: 'Submit BGTask request in applicationDidEnterBackground. Apple may reject the task — always implement foreground sync as fallback.'
+  },
+  {
+    cat: 'system', difficulty: 'expert',
+    q: 'Design the analytics event pipeline for a high-volume iOS app.',
+    a: `Requirements: reliable delivery, minimal performance impact, offline support, GDPR compliance.
+
+Client-side design:
+• <strong>In-memory buffer</strong>: Accumulate events (ring buffer, max 1000)
+• <strong>Flush triggers</strong>: Every 30s, on app background, on buffer full, on WiFi available for large batches
+• <strong>Persistent queue</strong>: SQLite WAL for durability across crashes
+• <strong>Batching</strong>: POST up to 100 events per request; server returns which were accepted
+• <strong>Retry with backoff</strong>: Exponential backoff, max 3 retries; dead-letter queue for persistent failures
+• <strong>Privacy</strong>: Strip PII before persistence; respect ATT framework consent for identifiers
+• <strong>Sampling</strong>: High-volume events (scroll, video progress) sampled client-side before enqueue`,
+    tip: 'Mention that the analytics pipeline should be one of the first things instrumented — you need it to measure everything else. Show operational maturity.'
+  },
+  {
+    cat: 'system', difficulty: 'hard',
+    q: 'How do you implement feature flags in an iOS app?',
+    a: `Feature flags decouple <strong>deployment from release</strong> — code ships, features activate remotely.
+
+Components:
+• <strong>Remote config</strong>: Fetch flags from server (Firebase Remote Config, LaunchDarkly, or in-house)
+• <strong>Local cache</strong>: Store last-known flag values — app works offline with cached config
+• <strong>Defaults</strong>: Compile-time defaults if remote unreachable
+• <strong>Targeting</strong>: User segment, device, app version, locale
+• <strong>Rollout %</strong>: Hash userId mod 100 for deterministic bucketing`,
+    code: `enum Feature: String {
+    case newCheckout, redesignedFeed, aiSuggestions
+}
+
+struct FeatureFlags {
+    private let config: RemoteConfig
+
+    func isEnabled(_ feature: Feature, for user: User) -> Bool {
+        let key = feature.rawValue
+        guard let rawValue = config.value(for: key) else { return feature.defaultValue }
+        // Percentage rollout
+        if let pct = rawValue.percentage {
+            return (user.id.stableHash % 100) < pct
+        }
+        return rawValue.boolValue
+    }
+}`,
+    tip: 'Discuss kill switches (instant disable for bad feature), and how to clean up flag code after full rollout — flag debt is real.'
+  },
+  {
+    cat: 'system', difficulty: 'hard',
+    q: 'How do you approach app security — data storage, transport, and code?',
+    a: `Defense in depth across layers:
+
+<strong>Data at rest</strong>:
+• Sensitive data (tokens, PII) in Keychain with kSecAttrAccessibleWhenUnlocked
+• No secrets in UserDefaults or plist
+• Core Data encryption with NSFileProtection.completeUnlessOpen
+• Wipe sensitive data on logout
+
+<strong>Transport</strong>:
+• TLS 1.3, certificate pinning (with fallback to prevent lockout)
+• App Transport Security enabled
+• Request signing (HMAC) for API authentication
+
+<strong>Code hardening</strong>:
+• Enable all compiler sanitizers in debug
+• Jailbreak detection (for high-security apps)
+• Anti-debugging in release builds (ptrace, sysctl)
+• Obfuscate string literals for sensitive keys (no hardcoded secrets)
+• Runtime Application Self-Protection (RASP)`,
+    tip: 'Certificate pinning requires a backup pin + OTA update to rotate. Mention this — broken pinning = broken app. OWASP Mobile Top 10 is a great reference to cite.'
+  },
+  {
+    cat: 'system', difficulty: 'medium',
+    q: 'How do you build an accessible iOS app? What are the key APIs and testing strategies?',
+    a: `Accessibility is a <strong>first-class feature</strong>, not a checkbox.
+
+Key UIKit/SwiftUI APIs:
+• <strong>accessibilityLabel</strong>: What VoiceOver reads ("Delete message from Alice")
+• <strong>accessibilityHint</strong>: Action description ("Double tap to delete")
+• <strong>accessibilityValue</strong>: Dynamic state ("50%, 3 of 6 steps")
+• <strong>accessibilityTraits</strong>: .button, .header, .selected, .adjustable
+• <strong>UIAccessibilityCustomAction</strong>: Swipe-accessible actions beyond tap
+• <strong>Dynamic Type</strong>: Use .font(.body) + .scaledFont in SwiftUI; UIFontMetrics in UIKit
+• <strong>Reduce Motion</strong>: Check UIAccessibility.isReduceMotionEnabled
+
+Testing:
+• VoiceOver manual audit (always)
+• Accessibility Inspector in Xcode
+• XCTest.accessibilityActivate() for automated testing
+• axe DevTools for CI integration`,
+    tip: 'WCAG 2.1 AA is the standard for most enterprise apps. 4.5:1 contrast ratio minimum. Mention you\'d run VoiceOver with eyes closed — real users do.'
+  }
+];
+
+let revealed = new Set();
+let currentCat = 'all';
+
+function filteredQuestions() {
+  return currentCat === 'all' ? questions : questions.filter(q => q.cat === currentCat);
+}
+
+function updateProgress() {
+  const total = filteredQuestions().length;
+  const done = filteredQuestions().filter((_, i) => {
+    const realIdx = questions.indexOf(filteredQuestions()[i]);
+    return revealed.has(realIdx);
+  }).length;
+  const pct = total ? (done / total * 100).toFixed(0) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Progress: ${done} / ${total} reviewed`;
+  document.getElementById('revealCount').textContent = revealed.size;
+}
+
+function renderCards() {
+  const list = document.getElementById('qaList');
+  list.innerHTML = '';
+  const items = filteredQuestions();
+
+  items.forEach((item, localIdx) => {
+    const globalIdx = questions.indexOf(item);
+    const num = String(localIdx + 1).padStart(2, '0');
+    const isRevealed = revealed.has(globalIdx);
+
+    const card = document.createElement('div');
+    card.className = 'qa-card' + (isRevealed ? ' revealed' : '');
+    card.dataset.idx = globalIdx;
+
+    const codePart = item.code ? `<div class="code-block">${escapeHtml(item.code.trim())}</div>` : '';
+    const tipPart = item.tip ? `<div class="tip-block">${item.tip}</div>` : '';
+
+    card.innerHTML = `
+      <div class="qa-header">
+        <span class="q-num">${num}</span>
+        <div class="q-meta">
+          <span class="difficulty ${item.difficulty}">${item.difficulty}</span>
+          <div class="question">${item.q}</div>
+        </div>
+        <button class="reveal-btn ${isRevealed ? 'shown' : ''}" onclick="toggleAnswer(${globalIdx}, this)">
+          ${isRevealed ? 'Hide' : 'Answer'}
+        </button>
+      </div>
+      <div class="answer-block ${isRevealed ? 'visible' : ''}">
+        <div class="answer-label">▸ Model Answer</div>
+        <div class="answer-text">${item.a}${codePart}${tipPart}</div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+  updateProgress();
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function toggleAnswer(globalIdx, btn) {
+  const card = document.querySelector(`[data-idx="${globalIdx}"]`);
+  const answer = card.querySelector('.answer-block');
+  const isVisible = answer.classList.contains('visible');
+
+  if (isVisible) {
+    answer.classList.remove('visible');
+    card.classList.remove('revealed');
+    btn.textContent = 'Answer';
+    btn.classList.remove('shown');
+    revealed.delete(globalIdx);
+  } else {
+    answer.classList.add('visible');
+    card.classList.add('revealed');
+    btn.textContent = 'Hide';
+    btn.classList.add('shown');
+    revealed.add(globalIdx);
+  }
+  updateProgress();
+}
+
+function revealAll() {
+  filteredQuestions().forEach(item => revealed.add(questions.indexOf(item)));
+  renderCards();
+}
+
+function collapseAll() {
+  filteredQuestions().forEach(item => revealed.delete(questions.indexOf(item)));
+  renderCards();
+}
+
+// Tabs
+document.getElementById('tabs').addEventListener('click', e => {
+  if (!e.target.matches('.tab')) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  currentCat = e.target.dataset.cat;
+  renderCards();
+});
+
+// Init
+renderCards();
+</script>
+</body>
+</html>
